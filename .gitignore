@@ -1,0 +1,6 @@
+build
+.gradle
+.idea
+.h2db
+otherlibs
+transaction-logs

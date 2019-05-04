@@ -1,0 +1,159 @@
+# デバッグモード
+#debug: false
+
+# ロガー設定
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+    org.springframework.jdbc: DEBUG
+    com.atomikos.jdbc: DEBUG
+#    org.springframework.transaction: DEBUG
+
+# Springの設定
+spring:
+  main:
+    banner-mode: "off"
+  batch:
+    # メタデータを作成させない
+    initialize-schema: NEVER
+#    # embedded datasource用の設定。ここではH2を使うのでこの値にする
+#    initialize-schema: EMBEDDED
+    job:
+      # @EnableBatchProcessingを持つすべてのバッチを起動する
+      enabled: true
+  # データソースの設定（ローカルトランザクション用）
+  datasource:
+    devcom:
+      driverClassName: org.h2.Driver
+      url: jdbc:h2:./.h2db/sampledb
+      username: sa
+      password: sa
+      autoCommit: false
+      # コネクションプールなしのDataSource
+      type: org.springframework.jdbc.datasource.DriverManagerDataSource
+    devdb1:
+      # Oracle18c Express Edition
+      driverClassName: oracle.jdbc.OracleDriver
+      url: jdbc:oracle:thin:@//localhost:1521/xepdb1
+      username: MYTEST
+      password: MYTEST
+      autoCommit: false
+#      # コネクションプールなしのDataSource
+#      type: org.springframework.jdbc.datasource.DriverManagerDataSource
+      # コネクションプールありのDataSource実装
+      type: com.zaxxer.hikari.HikariDataSource
+    devdb2:
+      # DB2 ver 11
+      driverClassName: com.ibm.db2.jcc.DB2Driver
+      url: jdbc:db2://localhost:50000/SAMPLE
+      username: db2admin
+      password: db2admin
+      autoCommit: false
+#      # コネクションプールなしのDataSource
+#      type: org.springframework.jdbc.datasource.DriverManagerDataSource
+      # コネクションプールありのDataSource実装
+      type: com.zaxxer.hikari.HikariDataSource
+  # トランザクション設定
+  transaction:
+    default-timeout: 10
+    # コミットに失敗したときにロールバックする
+    rollback-on-commit-failure: true
+  # JTAの設定
+  jta:
+    # JTAを有効にする
+    enabled: true
+    transaction_manager_id: 192.168.100.14.atomikos.tm
+    # Atomikos固有の設定
+    atomikos:
+      properties:
+        # AtomikosProperties.java への設定値(jta.propertiesに設定した場合と値構成が異なっています)
+        # (note) 下記の値はデフォルト値と同じです
+        max_timeout: 300000
+        default_jta_timeout: 10000
+        max_actives: 50
+        enable_logging: true
+        serial_jta_transactions: true
+        allow_subtransactions: true
+        force_shutdown_on_vm_exit: false
+        default_max_wait_time_on_shutdown: 9223372036854775807
+        log_base_name: tmlog
+        checkpoint_interval: 500
+        # threaded_2pc の設定値
+        threaded_two_phase_commit: false
+#        # (note) この値はPGでspring.jta.transaction_manager_idで上書きしますので設定しても無駄です
+#        tm_unique_name: 192.168.100.14.atomikos.tm
+#        # (note)この値はPGで組み立てるため設定しても無駄です
+#        log_base_dir: /xxx/transaction-logs
+        # 回復オプション
+        recovery:
+          forget_orphaned_log_entries_delay: 86400000
+          # recovery_delay の設定値
+          delay: 10001
+          # oltp_max_retries の設定値
+          max_retries: 5
+          # oltp_retry_interval の設定値
+          retry_interval: 10000
+      datasource:
+        # XA用DataSourceの定義(1個目)
+        xadb1:
+          # AbstractDataSourceBean の設定値
+          # (note) unique-resource-name, test-quer,max-life-timey, default-isolation-level以外はデフォルト値
+          unique-resource-name: XaDb1DataSource
+          max-pool-size: 1
+          min-pool-size: 1
+          borrow-connection-timeout: 30
+          reap-timeout: 0
+          max-idle-time: 60
+          test-query: select 1 from dual
+          maintenance-interval: 60
+          login-timeout: 0
+          max-life-time: 20000
+          # TRANSACTION_READ_COMMITTED
+          default-isolation-level: 2
+          enable-concurrent-connection-validation: true
+          # AtomikosDataSourceBean の設定値
+          # (note) OracleXA用DataSource実装クラスを指定する
+          xa-data-source-class-name: oracle.jdbc.xa.client.OracleXADataSource
+          # xa-data-source-class-nameが示す実装クラスに引き渡すプロパティ.実装クラス依存の値になる
+          xa-properties:
+            URL: jdbc:oracle:thin:@//localhost:1521/xepdb1
+            user: MYTEST
+            password: MYTEST
+        # XA用DataSourceの定義(2個目)
+        xadb2:
+          # AbstractDataSourceBean の設定値
+          # (note) unique-resource-name, test-quer,max-life-timey, default-isolation-level以外はデフォルト値
+          unique-resource-name: XaDb2DataSource
+          max-pool-size: 1
+          min-pool-size: 1
+          borrow-connection-timeout: 30
+          reap-timeout: 0
+          max-idle-time: 60
+          test-query: select 1 from sysibm.dual
+          maintenance-interval: 60
+          login-timeout: 0
+          max-life-time: 20000
+          # TRANSACTION_READ_COMMITTED
+          default-isolation-level: 2
+          enable-concurrent-connection-validation: true
+          # AtomikosDataSourceBean の設定値
+          # (note) DB2 XA用DataSource実装クラスを指定する
+          xa-data-source-class-name: com.ibm.db2.jcc.DB2XADataSource
+          # xa-data-source-class-nameが示す実装クラスに引き渡すプロパティ.実装クラス依存の値になる
+          xa-properties:
+#            URL: jdbc:db2://localhost:50000/SAMPLE
+            serverName: localhost
+            portNumber: 50000
+            databaseName: SAMPLE
+            driverType: 4
+            user: db2admin
+            password: db2admin
+
+# MyBatis設定
+mybatis:
+  configuration:
+    default-fetch-size: 10
+    default-statement-timeout: 30
+
+

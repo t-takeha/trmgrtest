@@ -1,0 +1,47 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+}
+
+group 'jp.dip.cloudlet.springtest'
+version '1.0-SNAPSHOT'
+mainClassName = 'jp.dip.cloudlet.springtest.ApplicationMain'
+
+sourceCompatibility = 1.8
+compileJava {
+    options.encoding='UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+configurations {
+    all*.exclude module:'spring-boot-starter-logging'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jta-atomikos'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1'
+    implementation 'com.h2database:h2'
+    implementation 'org.apache.commons:commons-lang3'
+    compile files('otherlibs/ojdbc8.jar')
+    compile files('otherlibs/db2jcc4.jar')
+}

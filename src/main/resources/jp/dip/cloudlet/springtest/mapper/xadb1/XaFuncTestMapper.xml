@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.dip.cloudlet.springtest.mapper.xadb1.XaFuncTestMapper">
+  <!-- ストアードファンクション「MyFuncTest」の入出力パラメータ定義  -->
+  <parameterMap id="idMyFuncTestParam" type="jp.dip.cloudlet.springtest.model.MyFuncTestParam">
+    <parameter property="rc" jdbcType="INTEGER" mode="OUT"/>
+    <parameter property="in1" mode="IN"/>
+    <parameter property="out1" jdbcType="INTEGER" mode="OUT"/>
+    <parameter property="out2" jdbcType="VARCHAR" mode="OUT"/>
+  </parameterMap>
+
+  <!-- ストアードファンクション呼び出し -->
+  <select id="executeMyFuncTest" statementType="CALLABLE" parameterMap="idMyFuncTestParam">
+    {? = call MYFUNCTEST(?,?,?)}
+  </select>
+</mapper>
