@@ -5,7 +5,8 @@
 logging:
   level:
     root: INFO
-    org.springframework: DEBUG
+    org.springframework: INFO
+    org.springframework.batch: INFO
     org.springframework.jdbc: DEBUG
     com.atomikos.jdbc: DEBUG
 #    org.springframework.transaction: DEBUG
