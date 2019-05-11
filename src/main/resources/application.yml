@@ -43,6 +43,11 @@ spring:
 #      type: org.springframework.jdbc.datasource.DriverManagerDataSource
       # コネクションプールありのDataSource実装
       type: com.zaxxer.hikari.HikariDataSource
+      # MyBatis個別設定
+      mybatis:
+        configuration:
+          default-fetch-size: 10
+          default-statement-timeout: 30
     devdb2:
       # DB2 ver 11
       driverClassName: com.ibm.db2.jcc.DB2Driver

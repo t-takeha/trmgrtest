@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static jp.dip.cloudlet.springtest.config.DevDb1DataSourceConfig.DEVDB1_TRANSACTION_MANAGER;
+import static jp.dip.cloudlet.springtest.config.DevDb1DataSourceConfig.TRANSACTION_MANAGER;
 
 /**
  * ローカルDB（DevDB1）トランザクション確認用Taskletの実装
@@ -28,7 +28,7 @@ public class LocalDb1TransactionTestTasklet implements Tasklet {
     MyFuncTestMapper myFuncTestMapper;
 
     @Override
-    @Transactional(transactionManager = DEVDB1_TRANSACTION_MANAGER)
+    @Transactional(transactionManager = TRANSACTION_MANAGER)
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("##### LocalDb1TransactionTestTasklet.execute ######");
         log.info("### contribution : " + contribution);

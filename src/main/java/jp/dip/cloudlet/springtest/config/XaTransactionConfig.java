@@ -36,7 +36,7 @@ public class XaTransactionConfig {
     /**
      * XA用トランザクションマネージャ名
      */
-    public static final String XA_TRANSACTION_MANAGER = "atomikosJtaTransactionManager";
+    public static final String TRANSACTION_MANAGER = "atomikosJtaTransactionManager";
 
     // ロガー
     private static final Logger log = LogManager.getLogger(XaTransactionConfig.class);
@@ -127,7 +127,7 @@ public class XaTransactionConfig {
      * @param userTransactionManager AtomikosのUserTransactionManager
      * @return JtaTransactionManager
      */
-    @Bean(XA_TRANSACTION_MANAGER)
+    @Bean(TRANSACTION_MANAGER)
     @DependsOn("atomikosUserTransactionService")
     public JtaTransactionManager transactionManager(
             @Autowired @Qualifier("atomikosUserTransaction") UserTransaction userTransaction,

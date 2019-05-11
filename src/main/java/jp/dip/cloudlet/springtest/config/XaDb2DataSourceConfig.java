@@ -9,7 +9,6 @@ import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 import org.springframework.context.annotation.Bean;
@@ -25,27 +24,39 @@ public class XaDb2DataSourceConfig {
     /**
      * データソース名
      */
-    private static final String _XADB2_DATASOURCE = "xadb2DataSource";
+    private static final String _DATASOURCE = "xadb2DataSource";
 
     /**
      * SqlSessionFactory名
      */
-    private static final String _XADB2_SQLSESSION_FACTORY = "xadb2SqlSessionFactory";
+    private static final String _SQLSESSION_FACTORY = "xadb2SqlSessionFactory";
 
     /**
-     * MyBatisの自動コンフィグにより有効になるMyBatis用プロパティをAutowiredする
+     * このデータソース専用のMyBatis用Configuration
+     */
+    private static final String _MYBATIS_CONF_NAME = "xadb2MybatisConfiguration";
+
+    /**
+     * MyBatisのConfigurationをAutowiredする
      */
     @Autowired
-    private MybatisProperties mybatisProperties;
+    @Qualifier(_MYBATIS_CONF_NAME)
+    org.apache.ibatis.session.Configuration mybatisConfiguration;
 
     /**
      * XA用データソースの定義（AtomikosのBeanを使用する）
      * @return
      */
-    @Bean(_XADB2_DATASOURCE)
+    @Bean(_DATASOURCE)
     @ConfigurationProperties(prefix = "spring.jta.atomikos.datasource.xadb2")
     public DataSource dataSource() {
         return new AtomikosDataSourceBean();
+    }
+
+    @Bean(_MYBATIS_CONF_NAME)
+    @ConfigurationProperties(prefix = "mybatis.configuration")  // ここではグローバス設定でOKな体
+    public org.apache.ibatis.session.Configuration mybatisConfiguration() {
+        return new org.apache.ibatis.session.Configuration();
     }
 
     /**
@@ -54,13 +65,14 @@ public class XaDb2DataSourceConfig {
      * @param dataSource _DEVDB2_DATASOURCEのDataSource
      * @return SqlSessionFactory
      */
-    @Bean(_XADB2_SQLSESSION_FACTORY)
+    @Bean(_SQLSESSION_FACTORY)
     public SqlSessionFactory sqlSessionFactory(
-            @Autowired @Qualifier(_XADB2_DATASOURCE) DataSource dataSource) throws Exception {
+            @Autowired @Qualifier(_DATASOURCE) DataSource dataSource) throws Exception {
 
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setVfs(SpringBootVFS.class);
+        factory.setConfiguration(mybatisConfiguration);
 
         // (note) SqlSessionFactoryBeanが持っているsetterにもっと値を詰めたければここで実装して
 
@@ -76,13 +88,7 @@ public class XaDb2DataSourceConfig {
      */
     @Bean("xadb2SqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(
-            @Autowired @Qualifier(_XADB2_SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
-
-        ExecutorType executorType = mybatisProperties.getExecutorType();
-        if (executorType != null) {
-            return new SqlSessionTemplate(sqlSessionFactory, executorType);
-        } else {
-            return new SqlSessionTemplate(sqlSessionFactory);
-        }
+            @Autowired @Qualifier(_SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

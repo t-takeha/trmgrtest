@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
-import static jp.dip.cloudlet.springtest.config.DevDb2DataSourceConfig.DEVDB2_TRANSACTION_MANAGER;
+import static jp.dip.cloudlet.springtest.config.DevDb2DataSourceConfig.TRANSACTION_MANAGER;
 
 /**
  * ローカルDB（DevDb2）トランザクション確認用Taskletの実装
@@ -28,7 +28,7 @@ public class LocalDb2TransactionTestTasklet implements Tasklet {
     Db2MetaGetTestMapper db2MetaGetTestMapper;
 
     @Override
-    @Transactional(transactionManager = DEVDB2_TRANSACTION_MANAGER)
+    @Transactional(transactionManager = TRANSACTION_MANAGER)
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("##### LocalDb2TransactionTestTasklet.execute ######");
         log.info("### contribution : " + contribution);

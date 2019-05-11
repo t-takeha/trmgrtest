@@ -27,7 +27,7 @@ H2、Oracle18c Express Edition、DB2 ver11
 
 * DevComDataSourceConfig  
     * 非XAのデータソース
-    * H2に接続。Spring Batchの内部リポジトリに使用。
+    * H2に接続
     * DataSource：DriverManagerDataSource（コネクションプールなし）
     * トランザクションマネージャ：DataSourceTransactionManager
     * O/Rマッパー：なし

@@ -16,10 +16,10 @@ import javax.sql.DataSource;
 /**
  * プライマリデータソースの定義.
  *
- * Spring Batchの内部リポジトリ用DBとして利用する.
  * 非XAのDataSourceの定義
  * DataSourceの実装はapplication.ymlのtypeで指定する.
  * トランザクションマネージャにはローカルトランザクション用のDataSourceTransactionManagerを使用.
+ * MyBatisは利用しない.
  */
 @Configuration
 @EnableTransactionManagement
@@ -27,12 +27,12 @@ public class DevComDataSourceConfig {
     /**
      * トランザクションマネージャ名（外からの参照あり）
      */
-    public static final String DEVCOM_TRANSACTION_MANAGER = "devcomTransactionManager";
+    public static final String TRANSACTION_MANAGER = "devcomTransactionManager";
 
     /**
      * データソース名
      */
-    private static final String _DEVCOM_DATASOURCE = "devcomDataSource";
+    private static final String _DATASOURCE = "devcomDataSource";
 
     /**
      * DataSourceプロパティ読み込み用Beanを定義する.
@@ -51,7 +51,7 @@ public class DevComDataSourceConfig {
      * @return _DEVCOM_DATASOURCEのDataSource
      */
     @Primary
-    @Bean(_DEVCOM_DATASOURCE)
+    @Bean(_DATASOURCE)
     public DataSource dataSource(@Autowired @Qualifier("devcomDataSourceProperties") DataSourceProperties properties) {
         return properties.initializeDataSourceBuilder().build();
     }
@@ -65,9 +65,9 @@ public class DevComDataSourceConfig {
      * @return PlatformTransactionManager
      */
     @Primary
-    @Bean(DEVCOM_TRANSACTION_MANAGER)
+    @Bean(TRANSACTION_MANAGER)
     public PlatformTransactionManager transactionManager(
-            @Autowired @Qualifier(_DEVCOM_DATASOURCE) DataSource dataSource) {
+            @Autowired @Qualifier(_DATASOURCE) DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 }

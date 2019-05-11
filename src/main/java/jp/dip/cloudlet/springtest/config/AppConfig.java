@@ -4,7 +4,6 @@ import jp.dip.cloudlet.springtest.tasklet.LocalDb1TransactionTestTasklet;
 import jp.dip.cloudlet.springtest.tasklet.LocalDb2TransactionTestTasklet;
 import jp.dip.cloudlet.springtest.tasklet.XaDbTransactionTestTasklet;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * このプロジェクト唯一のバッチ定義.
  */
 @Configuration
-@EnableBatchProcessing
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AppConfig {
 

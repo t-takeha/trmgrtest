@@ -1,11 +1,9 @@
 package jp.dip.cloudlet.springtest.config;
 
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,23 +30,29 @@ public class DevDb2DataSourceConfig {
     /**
      * トランザクションマネージャ名（外からの参照あり）
      */
-    public static final String DEVDB2_TRANSACTION_MANAGER = "devdb2TransactionManager" ;
+    public static final String TRANSACTION_MANAGER = "devdb2TransactionManager" ;
 
     /**
      * データソース名
      */
-    private static final String _DEVDB2_DATASOURCE = "devdb2DataSource";
+    private static final String _DATASOURCE = "devdb2DataSource";
 
     /**
      * SqlSessionFactory名
      */
-    private static final String _DEVDB2_SQLSESSION_FACTORY = "devdb2SqlSessionFactory";
+    private static final String _SQLSESSION_FACTORY = "devdb2SqlSessionFactory";
 
     /**
-     * MyBatisの自動コンフィグにより有効になるMyBatis用プロパティをAutowiredする
+     * このデータソース専用のMyBatis用Configuration
+     */
+    private static final String _MYBATIS_CONF_NAME = "devdb2MybatisConfiguration";
+
+    /**
+     * MyBatisのConfigurationをAutowiredする
      */
     @Autowired
-    private MybatisProperties mybatisProperties;
+    @Qualifier(_MYBATIS_CONF_NAME)
+    org.apache.ibatis.session.Configuration mybatisConfiguration;
 
     /**
      * DataSourceプロパティ読み込み用Beanを定義する.
@@ -65,7 +69,7 @@ public class DevDb2DataSourceConfig {
      *
      * @return DEVDB2_DATASOURCEのDataSource
      */
-    @Bean(_DEVDB2_DATASOURCE)
+    @Bean(_DATASOURCE)
     public DataSource dataSource(@Autowired @Qualifier("devdb2DataSourceProperties") DataSourceProperties properties) {
         return properties.initializeDataSourceBuilder().build();
     }
@@ -77,10 +81,16 @@ public class DevDb2DataSourceConfig {
      * @param dataSource DEVDB1_DATASOURCEのDataSource
      * @return PlatformTransactionManager
      */
-    @Bean(DEVDB2_TRANSACTION_MANAGER)
+    @Bean(TRANSACTION_MANAGER)
     public PlatformTransactionManager transactionManager(
-            @Autowired @Qualifier(_DEVDB2_DATASOURCE) DataSource dataSource) {
+            @Autowired @Qualifier(_DATASOURCE) DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(_MYBATIS_CONF_NAME)
+    @ConfigurationProperties(prefix = "mybatis.configuration")  // ここではグローバス設定でOKな体
+    public org.apache.ibatis.session.Configuration mybatisConfiguration() {
+        return new org.apache.ibatis.session.Configuration();
     }
 
     /**
@@ -89,13 +99,14 @@ public class DevDb2DataSourceConfig {
      * @param dataSource _DEVDB2_DATASOURCEのDataSource
      * @return SqlSessionFactory
      */
-    @Bean(_DEVDB2_SQLSESSION_FACTORY)
+    @Bean(_SQLSESSION_FACTORY)
     public SqlSessionFactory sqlSessionFactory(
-            @Autowired @Qualifier(_DEVDB2_DATASOURCE) DataSource dataSource) throws Exception {
+            @Autowired @Qualifier(_DATASOURCE) DataSource dataSource) throws Exception {
 
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setVfs(SpringBootVFS.class);
+        factory.setConfiguration(mybatisConfiguration);
 
         // (note) SqlSessionFactoryBeanが持っているsetterにもっと値を詰めたければここで実装して
 
@@ -111,13 +122,7 @@ public class DevDb2DataSourceConfig {
      */
     @Bean("devdb2SqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(
-            @Autowired @Qualifier(_DEVDB2_SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
-
-        ExecutorType executorType = mybatisProperties.getExecutorType();
-        if (executorType != null) {
-            return new SqlSessionTemplate(sqlSessionFactory, executorType);
-        } else {
-            return new SqlSessionTemplate(sqlSessionFactory);
-        }
+            @Autowired @Qualifier(_SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

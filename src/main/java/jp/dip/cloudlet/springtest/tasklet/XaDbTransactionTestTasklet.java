@@ -1,7 +1,5 @@
 package jp.dip.cloudlet.springtest.tasklet;
 
-import jp.dip.cloudlet.springtest.mapper.devdb1.MyFuncTestMapper;
-import jp.dip.cloudlet.springtest.mapper.devdb2.Db2MetaGetTestMapper;
 import jp.dip.cloudlet.springtest.mapper.xadb1.XaFuncTestMapper;
 import jp.dip.cloudlet.springtest.mapper.xadb2.XaDb2MetaGetTestMapper;
 import jp.dip.cloudlet.springtest.model.Db2MetaGetTest;
@@ -21,7 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static jp.dip.cloudlet.springtest.config.XaTransactionConfig.XA_TRANSACTION_MANAGER;
+import static jp.dip.cloudlet.springtest.config.XaTransactionConfig.TRANSACTION_MANAGER;
 
 /**
  * XA DBトランザクション確認用Taskletの実装
@@ -41,7 +39,7 @@ public class XaDbTransactionTestTasklet implements Tasklet {
     //Db2MetaGetTestMapper xaDb2MetaGetTestMapper;
 
     @Override
-    @Transactional(transactionManager = XA_TRANSACTION_MANAGER)
+    @Transactional(transactionManager = TRANSACTION_MANAGER)
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("##### XaDbTransactionTestTasklet.execute ######");
         log.info("### contribution : " + contribution);
