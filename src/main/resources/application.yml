@@ -21,15 +21,15 @@ spring:
 #    # embedded datasource用の設定。ここではH2を使うのでこの値にする
 #    initialize-schema: EMBEDDED
     job:
-      # @EnableBatchProcessingを持つすべてのバッチを起動する
-      enabled: true
+      # trueの場合は@EnableBatchProcessingを持つすべてのバッチを起動する
+      enabled: false
   # データソースの設定（ローカルトランザクション用）
   datasource:
     devcom:
       driverClassName: org.h2.Driver
       url: jdbc:h2:./.h2db/sampledb
       username: sa
-      password: sa
+      password:
       autoCommit: false
       # コネクションプールなしのDataSource
       type: org.springframework.jdbc.datasource.DriverManagerDataSource
@@ -155,6 +155,31 @@ spring:
             driverType: 4
             user: db2admin
             password: db2admin
+        # XA用DataSourceの定義(3個目)
+        xadb3:
+          # AbstractDataSourceBean の設定値
+          # (note) unique-resource-name, test-quer,max-life-timey, default-isolation-level以外はデフォルト値
+          unique-resource-name: XaDb3DataSource
+          max-pool-size: 1
+          min-pool-size: 1
+          borrow-connection-timeout: 30
+          reap-timeout: 0
+          max-idle-time: 60
+          maintenance-interval: 60
+          login-timeout: 0
+          max-life-time: 20000
+          # TRANSACTION_READ_COMMITTED
+          default-isolation-level: 2
+          enable-concurrent-connection-validation: true
+          # AtomikosDataSourceBean の設定値
+          # (note) H2 XA用DataSource実装クラスを指定する
+          xa-data-source-class-name: org.h2.jdbcx.JdbcDataSource
+          # xa-data-source-class-nameが示す実装クラスに引き渡すプロパティ.実装クラス依存の値になる
+          xa-properties:
+            #URL: jdbc:h2:mem:xatestedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+            URL: jdbc:h2:./.h2db/xatestedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+            user: sa
+            password:
 
 # MyBatis設定
 mybatis:

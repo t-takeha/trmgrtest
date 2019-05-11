@@ -14,25 +14,28 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
+/**
+ * XAデータソース（3個目）の定義
+ */
 @Configuration
-@MapperScan(basePackages = {"jp.dip.cloudlet.springtest.mapper.xadb2"},
-        sqlSessionFactoryRef = XaDb2DataSourceConfig.SQLSESSION_FACTORY)
-public class XaDb2DataSourceConfig {
+@MapperScan(basePackages = {"jp.dip.cloudlet.springtest.mapper.xadb3"},
+        sqlSessionFactoryRef = XaDb3DataSourceConfig.SQLSESSION_FACTORY)
+public class XaDb3DataSourceConfig {
 
     /**
      * SqlSessionFactory名
      */
-    public static final String SQLSESSION_FACTORY = "xadb2SqlSessionFactory";
+    public static final String SQLSESSION_FACTORY = "xadb3SqlSessionFactory";
 
     /**
      * データソース名
      */
-    private static final String _DATASOURCE = "xadb2DataSource";
+    private static final String _DATASOURCE = "xadb3DataSource";
 
     /**
      * このデータソース専用のMyBatis用Configuration
      */
-    private static final String _MYBATIS_CONF_NAME = "xadb2MybatisConfiguration";
+    private static final String _MYBATIS_CONF_NAME = "xadb3MybatisConfiguration";
 
     /**
      * MyBatisのConfigurationをAutowiredする
@@ -46,7 +49,7 @@ public class XaDb2DataSourceConfig {
      * @return
      */
     @Bean(_DATASOURCE)
-    @ConfigurationProperties(prefix = "spring.jta.atomikos.datasource.xadb2")
+    @ConfigurationProperties(prefix = "spring.jta.atomikos.datasource.xadb3")
     public DataSource dataSource() {
         return new AtomikosDataSourceBean();
     }
@@ -60,7 +63,7 @@ public class XaDb2DataSourceConfig {
     /**
      * MyBatis用のSqlSessionFactoryを定義する.
      * (note)ここで定義している理由はDevDb1DataSourceConfigと同じ。そっちを参照。
-     * @param dataSource _DEVDB2_DATASOURCEのDataSource
+     * @param dataSource _DATASOURCEのDataSource
      * @return SqlSessionFactory
      */
     @Bean(SQLSESSION_FACTORY)
@@ -81,10 +84,10 @@ public class XaDb2DataSourceConfig {
      * MyBatis用SqlSessionTemplateを定義する.
      * (note)ここで定義している理由はDevDb1DataSourceConfigと同じ。そっちを参照。
      *
-     * @param sqlSessionFactory _XA_SQLSESSION_FACTORYでBean定義したSqlSessionFactory
+     * @param sqlSessionFactory _SQLSESSION_FACTORYでBean定義したSqlSessionFactory
      * @return SqlSessionTemplate
      */
-    @Bean("xadb2SqlSessionTemplate")
+    @Bean("xadb3SqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(
             @Autowired @Qualifier(SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);

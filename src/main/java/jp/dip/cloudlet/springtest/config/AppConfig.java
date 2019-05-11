@@ -1,5 +1,6 @@
 package jp.dip.cloudlet.springtest.config;
 
+import jp.dip.cloudlet.springtest.tasklet.InitH2DbTasklet;
 import jp.dip.cloudlet.springtest.tasklet.LocalDb1TransactionTestTasklet;
 import jp.dip.cloudlet.springtest.tasklet.LocalDb2TransactionTestTasklet;
 import jp.dip.cloudlet.springtest.tasklet.XaDbTransactionTestTasklet;
@@ -34,6 +35,9 @@ public class AppConfig {
     @Autowired
     XaDbTransactionTestTasklet xaDbTransactionTestTasklet;
 
+    @Autowired
+    InitH2DbTasklet initH2DbTasklet;
+
     @Bean
     public Job defaultJob() {
         return jobBuilderFactory.get("defaultJob")
@@ -41,6 +45,14 @@ public class AppConfig {
                 .start(stepBuilderFactory.get("defaultStep1").tasklet(localDb1TransactionTestTasklet).build())
                 .next(stepBuilderFactory.get("defaultStep2").tasklet(localDb2TransactionTestTasklet).build())
                 .next(stepBuilderFactory.get("defaultStep3").tasklet(xaDbTransactionTestTasklet).build())
+                .build();
+    }
+
+    @Bean
+    public Job initH2DbJob() {
+        return jobBuilderFactory.get("initH2DbJob")
+                .incrementer(new RunIdIncrementer())
+                .start(stepBuilderFactory.get("initH2DbStep").tasklet(initH2DbTasklet).build())
                 .build();
     }
 }

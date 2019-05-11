@@ -25,7 +25,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @MapperScan(basePackages = {"jp.dip.cloudlet.springtest.mapper.devdb1"},
-        sqlSessionFactoryRef = "devdb1SqlSessionFactory")
+        sqlSessionFactoryRef = DevDb1DataSourceConfig.SQLSESSION_FACTORY)
 public class DevDb1DataSourceConfig {
     /**
      * トランザクションマネージャ名（外からの参照あり）
@@ -33,14 +33,14 @@ public class DevDb1DataSourceConfig {
     public static final String TRANSACTION_MANAGER = "devdb1TransactionManager";
 
     /**
+     * SqlSessionFactory名
+     */
+    public static final String SQLSESSION_FACTORY = "devdb1SqlSessionFactory";
+
+    /**
      * データソース名
      */
     private static final String _DATASOURCE = "devdb1DataSource";
-
-    /**
-     * SqlSessionFactory名
-     */
-    private static final String _SQLSESSION_FACTORY = "devdb1SqlSessionFactory";
 
     /**
      * このデータソース専用のMyBatis用Configuration
@@ -109,7 +109,7 @@ public class DevDb1DataSourceConfig {
      * @param dataSource _DEVDB1_DATASOURCEのDataSource
      * @return SqlSessionFactory
      */
-    @Bean(_SQLSESSION_FACTORY)
+    @Bean(SQLSESSION_FACTORY)
     public SqlSessionFactory sqlSessionFactory(
             @Autowired @Qualifier(_DATASOURCE) DataSource dataSource) throws Exception {
 
@@ -132,7 +132,7 @@ public class DevDb1DataSourceConfig {
      */
     @Bean("devdb1SqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(
-            @Autowired @Qualifier(_SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
+            @Autowired @Qualifier(SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

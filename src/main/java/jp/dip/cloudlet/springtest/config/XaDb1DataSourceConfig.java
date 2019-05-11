@@ -1,11 +1,9 @@
 package jp.dip.cloudlet.springtest.config;
 
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,18 +16,18 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(basePackages = {"jp.dip.cloudlet.springtest.mapper.xadb1"},
-        sqlSessionFactoryRef = "xadb1SqlSessionFactory")
+        sqlSessionFactoryRef = XaDb1DataSourceConfig.SQLSESSION_FACTORY)
 public class XaDb1DataSourceConfig {
+
+    /**
+     * SqlSessionFactory名
+     */
+    public static final String SQLSESSION_FACTORY = "xadb1SqlSessionFactory";
 
     /**
      * データソース名
      */
     private static final String _DATASOURCE = "xadb1DataSource";
-
-    /**
-     * SqlSessionFactory名
-     */
-    private static final String _SQLSESSION_FACTORY = "xadb1SqlSessionFactory";
 
     /**
      * このデータソース専用のMyBatis用Configuration
@@ -67,7 +65,7 @@ public class XaDb1DataSourceConfig {
      * @param dataSource _DEVDB2_DATASOURCEのDataSource
      * @return SqlSessionFactory
      */
-    @Bean(_SQLSESSION_FACTORY)
+    @Bean(SQLSESSION_FACTORY)
     public SqlSessionFactory sqlSessionFactory(
             @Autowired @Qualifier(_DATASOURCE) DataSource dataSource) throws Exception {
 
@@ -90,7 +88,7 @@ public class XaDb1DataSourceConfig {
      */
     @Bean("xadb1SqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(
-            @Autowired @Qualifier(_SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
+            @Autowired @Qualifier(SQLSESSION_FACTORY) SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }
