@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
- * このプロジェクト唯一のバッチ定義.
+ * このプロジェクト唯一のジョブ定義.
  */
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass = true)
