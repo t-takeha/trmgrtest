@@ -45,6 +45,7 @@ public class AppConfig {
                 .start(stepBuilderFactory.get("defaultStep1").tasklet(localDb1TransactionTestTasklet).build())
                 .next(stepBuilderFactory.get("defaultStep2").tasklet(localDb2TransactionTestTasklet).build())
                 .next(stepBuilderFactory.get("defaultStep3").tasklet(xaDbTransactionTestTasklet).build())
+//                .start(stepBuilderFactory.get("defaultStep3").tasklet(xaDbTransactionTestTasklet).build())
                 .build();
     }
 

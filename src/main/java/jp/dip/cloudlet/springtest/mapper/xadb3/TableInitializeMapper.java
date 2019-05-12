@@ -14,6 +14,6 @@ public interface TableInitializeMapper {
     /**
      * テスト用のテーブルを作成する.
      */
-    @Update("CREATE TABLE IF NOT EXISTS xatest (id CHAR(10), name VARCHAR(20))")
+    @Update("CREATE TABLE xatest (id CHAR(10), name VARCHAR(20))")
     void createTable();
 }

@@ -9,7 +9,7 @@ logging:
     org.springframework.batch: INFO
     org.springframework.jdbc: DEBUG
     com.atomikos.jdbc: DEBUG
-#    org.springframework.transaction: DEBUG
+    org.springframework.transaction: DEBUG
 
 # Springの設定
 spring:
@@ -176,8 +176,8 @@ spring:
           xa-data-source-class-name: org.h2.jdbcx.JdbcDataSource
           # xa-data-source-class-nameが示す実装クラスに引き渡すプロパティ.実装クラス依存の値になる
           xa-properties:
-            #URL: jdbc:h2:mem:xatestedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-            URL: jdbc:h2:./.h2db/xatestedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+            #URL: jdbc:h2:mem:xatestdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+            URL: jdbc:h2:./.h2db/xatestdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
             user: sa
             password:
 

@@ -60,6 +60,13 @@ H2、Oracle18c Express Edition、DB2 ver11
     * トランザクションマネージャはAtomikos用に別途定義
     * O/Rマッパー：MyBatis
 
+* XaDb2DataSourceConfig  
+    * XAのデータソース
+    * 接続先は、H2
+    * DataSource：AtomikosDataSourceBeanを使用（コネクションプールあり）
+    * トランザクションマネージャはAtomikos用に別途定義
+    * O/Rマッパー：MyBatis
+
 * XaTransactionConfig
     * Atomikos用トランザクションマネージャの定義
     * UserTransactionServiceImp、UserTransaction、UserTransactionManager、JtaTransactionManagerを定義
@@ -81,7 +88,7 @@ H2、Oracle18c Express Edition、DB2 ver11
 
 * XaDbTransactionTestTasklet
     * XAのデータソースを使って、MyBatis経由でストアードファンクション＆INSERT/UPDATE/SELECTを実行
-    * トランザクションマネージャは、XaDb1DataSourceConfigで定義したものを指定
+    * トランザクションマネージャは、XaTransactionConfigで定義したものを指定
 
 ### 設定ファイル
 
@@ -109,5 +116,8 @@ H2、Oracle18c Express Edition、DB2 ver11
 * OpenJDK11の下で動かしています。intelliJ 2019.01付属のものでOK
 * otherlibsにOracleとDB2のJDBCドライバ（いずれもType4）を入れる
 * gradle使うか、intellijに読ませてビルド
+* H2のメンテナンス  
+    * `java -cp h2-1.4.199.jar org.h2.tools.Server -webAllowOthers -baseDir "(H2のデータファイルがある親パス)" `
+    * コンソールが出てきたらURLに`jdbc:h2:./xatestdb`と入力して接続
 
 以上。
