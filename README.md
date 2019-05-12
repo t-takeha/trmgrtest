@@ -8,7 +8,9 @@ Spring Batch + Spring Bootで以下を検証する。ライブラリでもなん
 
 * 複数の非XAデータソース＆非XAトランザクションマネージャの混在
 * 複数のXAデータソースの混在、XAトランザクションマネージャによるトランザクション制御
-* Spring Batch用の内部リポジトリトランザクションを切り離す構成の検証
+* Spring Batch用の内部リポジトリトランザクションを切り離す構成の検証  
+⇒ 検証できたので、BatchBaseConfigでMapベースのリポジトリを使用するよう修正.  
+　　もとに戻したければ、BatchBaseConfigの@Configurationをコメントアウト。
 
 ### 構成
 Spring Batch + Spring Boot + MyBatis + Atomikos
@@ -60,7 +62,7 @@ H2、Oracle18c Express Edition、DB2 ver11
     * トランザクションマネージャはAtomikos用に別途定義
     * O/Rマッパー：MyBatis
 
-* XaDb2DataSourceConfig  
+* XaDb3DataSourceConfig  
     * XAのデータソース
     * 接続先は、H2
     * DataSource：AtomikosDataSourceBeanを使用（コネクションプールあり）
